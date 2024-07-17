@@ -1,4 +1,4 @@
-# Node.js Assignment 6
+# Node.js Assignment 7
 
 This is a Node.js application for managing users and their to-do items. The application includes user authentication and authorization using JWT, CRUD operations for users (restricted to super admin), and CRUD operations for to-do items for each user. 
 

@@ -16,7 +16,7 @@ export function seed(knex: Knex): Promise<void> {
         {
           title: "todo 1",
           description: "this is todo 1",
-          userId: 2,
+          user_id: 2,
         },
       ]);
     });

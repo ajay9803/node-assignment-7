@@ -5,6 +5,8 @@ import { adminCheck } from "../utils/admin_check";
 import BaseModel from "./base";
 
 export class UserModel extends BaseModel {
+
+  // create user
   static createUser = async (user: Omit<User, "id">) => {
     const userToCreate = {
       name: user.name,
@@ -16,7 +18,10 @@ export class UserModel extends BaseModel {
     await this.queryBuilder().insert(userToCreate).table("users");
   };
 
+  // fetch user by email
   static getUserByEmail = async (email: string) => {
+    console.log("Find user by email.");
+
     const user = await this.queryBuilder()
       .select()
       .from("users")
@@ -33,15 +38,22 @@ export class UserModel extends BaseModel {
         )
         .table("roles_and_permissions")
         .select("permissions.permission_name")
+        .where("role_id", user.roleId);
 
-        .where({ role_id: user.roleId });
-      console.log("Permissions: ", permissions);
+        let userPermissions: string[] = permissions.map((permission) => {
+          return permission.permissionName;
+        });
+
+        console.log('permissions: ', userPermissions);
+
+        return {...user, permissions: userPermissions};
     }
 
     console.log("The existing user is: ", user);
     return user;
   };
 
+  // fetch user by id
   static getUserById = async (id: string) => {
     const user = await this.queryBuilder()
       .select()
@@ -53,6 +65,7 @@ export class UserModel extends BaseModel {
     return user;
   };
 
+  // update user by id
   static updateUserById = async (
     id: string,
 
@@ -80,6 +93,7 @@ export class UserModel extends BaseModel {
     return user;
   };
 
+  // delete user by id
   static deleteUserById = async (id: string) => {
     // forbid admin from deleting itself
     if (adminCheck(id)) {
@@ -97,88 +111,3 @@ export class UserModel extends BaseModel {
   };
 }
 
-// keep track of user's count to avoid duplicate user id's
-let userCount = 1;
-
-// initial admin and random user
-export const users: User[] = [
-  {
-    id: "0",
-    name: "Admin",
-    email: "admin@gmail.com",
-    password: "$2b$10$qU4R6tjzgsJIRYNEuzGSAO7cL2qDGg2.N4QMw0w2GXQvA1hM36R2W",
-    permissions: [
-      "users.create",
-      "users.update",
-      "users.delete",
-      "users.fetch",
-      "todos.create",
-      "todos.update",
-      "todos.delete",
-      "todos.fetch",
-    ],
-  },
-  {
-    id: "1",
-    name: "test 1",
-    email: "test1@gmail.com",
-    password: "$2b$10$qU4R6tjzgsJIRYNEuzGSAO7cL2qDGg2.N4QMw0w2GXQvA1hM36R2W",
-    permissions: [
-      "todos.create",
-      "todos.update",
-      "todos.delete",
-      "todos.fetch",
-    ],
-  },
-];
-
-// push new user to users-list
-export const createUser = (user: Omit<User, "id">) => {
-  users.push({ id: `${userCount + 1}`, ...user });
-
-  // increase user count in each user-creation
-  userCount++;
-};
-
-// fetch user by id
-export const getUserById = (id: string) => {
-  return users.find((user) => user.id === id);
-};
-
-// fetch user by email
-export const getUserByEmail = (email: string) => {
-  return users.find((user) => user.email === email);
-};
-
-// update user by id
-export const updateUserById = (
-  id: string,
-
-  // omit id and permissions - use necessary data
-  theUser: Omit<User, "id" | "permissions">
-) => {
-  const user = users.find((user) => user.id === id);
-
-  if (user) {
-    user.email = theUser.email;
-    user.name = theUser.name;
-    user.password = theUser.password;
-  }
-
-  return user;
-};
-
-// delete user by id
-export const deleteUserById = (id: string) => {
-  const index = users.findIndex((user) => user.id === id);
-
-  // forbid admin from deleting itself
-  if (adminCheck(id)) {
-    throw new UnauthorizedError("Task forbidden.");
-  }
-  if (index >= 0) {
-    users.splice(index, 1);
-  } else {
-    throw new NotFoundError("No such user found.");
-  }
-};

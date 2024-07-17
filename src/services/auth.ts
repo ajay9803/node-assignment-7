@@ -7,7 +7,6 @@ import bcrypt from "bcrypt";
 import { verify, sign, JsonWebTokenError } from "jsonwebtoken";
 import { User } from "../interfaces/user";
 import HttpStatusCodes from "http-status-codes";
-import * as UserService from "../services/user";
 import * as UserModel from "../models/user";
 
 export const login = async (email: string, password: string) => {

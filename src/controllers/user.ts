@@ -1,4 +1,3 @@
-import { users } from "../models/user";
 import * as UserService from "../services/user";
 import { NextFunction, Request, Response } from "express";
 

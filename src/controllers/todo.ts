@@ -8,7 +8,11 @@ import { adminCheck } from "../utils/admin_check";
 // execute basic crud operations on todos
 
 // create todo
-export const createTodo = (req: Request, res: Response, next: NextFunction) => {
+export const createTodo = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   try {
     const { title, description } = req.body;
 
@@ -26,7 +30,7 @@ export const createTodo = (req: Request, res: Response, next: NextFunction) => {
       isCompleted: false,
     };
 
-    const result = TodoService.createTodo(newTodo);
+    const result = await TodoService.createTodo(newTodo);
     res.status(result.statusCode).send(result);
   } catch (e) {
     next(e);
@@ -34,7 +38,7 @@ export const createTodo = (req: Request, res: Response, next: NextFunction) => {
 };
 
 // fetch all todos
-export const getAllTodos = (
+export const getAllTodos = async (
   req: Request,
   res: Response,
   next: NextFunction
@@ -44,7 +48,7 @@ export const getAllTodos = (
     if (adminCheck(user!.id)) {
       throw new UnauthorizedError("Task forbidden.");
     }
-    const result = TodoService.getAllTodos(user!.id);
+    const result = await TodoService.getAllTodos(user!.id);
 
     res.status(result.statusCode).send(result);
   } catch (e) {
@@ -53,7 +57,7 @@ export const getAllTodos = (
 };
 
 // fetch todo by id
-export const getTodoById = (
+export const getTodoById = async (
   req: Request,
   res: Response,
   next: NextFunction
@@ -67,7 +71,7 @@ export const getTodoById = (
       throw new UnauthorizedError("Task forbidden.");
     }
 
-    const result = TodoService.getTodoById(id, user!.id);
+    const result = await TodoService.getTodoById(id, user!.id);
 
     res.status(result.statusCode).send(result);
   } catch (e) {
@@ -76,7 +80,7 @@ export const getTodoById = (
 };
 
 // delete todo by id
-export const deleteTodoById = (
+export const deleteTodoById = async (
   req: Request,
   res: Response,
   next: NextFunction
@@ -89,7 +93,7 @@ export const deleteTodoById = (
     if (adminCheck(user!.id)) {
       throw new UnauthorizedError("Task forbidden.");
     }
-    const result = TodoService.deleteTodo(id, user!.id);
+    const result = await TodoService.deleteTodo(id, user!.id);
 
     res.send(result);
   } catch (e) {
@@ -98,7 +102,7 @@ export const deleteTodoById = (
 };
 
 // update todo by id
-export const updateTodo = (req: Request, res: Response, next: NextFunction) => {
+export const updateTodo = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { id } = req.params;
     const { title, description } = req.body;
@@ -109,7 +113,7 @@ export const updateTodo = (req: Request, res: Response, next: NextFunction) => {
       throw new UnauthorizedError("Task forbidden.");
     }
 
-    const result = TodoService.updateTodo(id, title, description, user!.id);
+    const result = await TodoService.updateTodo(id, title, description, user!.id);
 
     res.status(result.statusCode).send(result);
   } catch (e) {
@@ -118,7 +122,7 @@ export const updateTodo = (req: Request, res: Response, next: NextFunction) => {
 };
 
 // update todo by id
-export const updateTodoIsCompletedStatus = (
+export const updateTodoIsCompletedStatus = async (
   req: Request,
   res: Response,
   next: NextFunction
@@ -132,7 +136,7 @@ export const updateTodoIsCompletedStatus = (
       throw new UnauthorizedError("Task forbidden.");
     }
 
-    const result = TodoService.updateTodoIsCompleteStatus(id, user!.id);
+    const result = await TodoService.updateTodoIsCompleteStatus(id, user!.id);
 
     res.status(result.statusCode).send(result);
   } catch (e) {

@@ -59,6 +59,10 @@ export const updateUserById = async (
   id: string,
   theUser: Omit<User, "id" | "permissions">
 ) => {
+  // hash the password - to store hashed password to the users data
+  const hashedPassword = await bcrypt.hash(theUser.password, 10);
+  theUser.password = hashedPassword;
+
   const user = await UserModel.UserModel.updateUserById(id, theUser);
 
   if (user) {

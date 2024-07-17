@@ -4,8 +4,8 @@ import { NotFoundError } from "../error/not_found_error";
 import HttpStatusCodes from "http-status-codes";
 
 // create todo - return success / failure result
-export const createTodo = (todo: Omit<Todo, "id">) => {
-  TodoModel.createTodo(todo);
+export const createTodo = async (todo: Omit<Todo, "id">) => {
+  await TodoModel.TodoModel.createTodo(todo);
   return {
     statusCode: HttpStatusCodes.CREATED,
     message: "Todo created successfully.",
@@ -13,8 +13,8 @@ export const createTodo = (todo: Omit<Todo, "id">) => {
 };
 
 // delete todo - return success result
-export const deleteTodo = (todoId: string, userId: string) => {
-  TodoModel.deleteTodo(todoId, userId);
+export const deleteTodo = async (todoId: string, userId: string) => {
+  await TodoModel.TodoModel.deleteTodo(todoId, userId);
   return {
     statusCode: HttpStatusCodes.NO_CONTENT,
     message: "Todo deleted successfully.",
@@ -22,8 +22,8 @@ export const deleteTodo = (todoId: string, userId: string) => {
 };
 
 // fetch all todos - return success / failure result
-export const getAllTodos = (userId: string) => {
-  const todos = TodoModel.getAllTodos(userId);
+export const getAllTodos = async (userId: string) => {
+  const todos = await TodoModel.TodoModel.getAllTodos(userId);
 
   if (todos.length === 0) {
     throw new NotFoundError("No todos found.");
@@ -36,8 +36,8 @@ export const getAllTodos = (userId: string) => {
 };
 
 // fetch tody by id - return success / failure result
-export const getTodoById = (todoId: string, userId: string) => {
-  const todo = TodoModel.getTodoById(todoId, userId);
+export const getTodoById = async (todoId: string, userId: string) => {
+  const todo = await TodoModel.TodoModel.getTodoById(todoId, userId);
 
   if (!todo) {
     throw new NotFoundError(`No todo found with id: ${todoId}`);
@@ -50,13 +50,13 @@ export const getTodoById = (todoId: string, userId: string) => {
 };
 
 // update todo by id - return success / failure result
-export const updateTodo = (
+export const updateTodo = async (
   id: string,
   title: string,
   description: string,
   userId: string
 ) => {
-  TodoModel.udpateTodo(id, title, description, userId);
+  await TodoModel.TodoModel.updateTodo(id, title, description, userId);
 
   return {
     statusCode: HttpStatusCodes.OK,
@@ -65,8 +65,11 @@ export const updateTodo = (
 };
 
 // update todo's is-complete status
-export const updateTodoIsCompleteStatus = (id: string, userId: string) => {
-  TodoModel.updateTodoCompletedStatus(id, userId);
+export const updateTodoIsCompleteStatus = async (
+  id: string,
+  userId: string
+) => {
+  await TodoModel.TodoModel.updateTodoCompletedStatus(id, userId);
 
   return {
     statusCode: HttpStatusCodes.OK,

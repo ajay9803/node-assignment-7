@@ -11,17 +11,15 @@ const TABLE_NAME = "todos";
 export async function up(knex: Knex): Promise<void> {
   return knex.schema.createTable(TABLE_NAME, (table) => {
     table.bigIncrements();
-    // id: string;
-    // title: string;
-    // description: string;
-    // userId: string;
-    // createdAt: Date;
-    // updatedAt: Date;
-    // isCompleted: boolean;
     table.string("title", 100).notNullable();
     table.string("description", 100).notNullable();
-    table.bigInteger("userId").notNullable().references("id").inTable("users").onDelete('cascade');
-    table.boolean('isCompleted').defaultTo(false);
+    table
+      .bigInteger("user_id")
+      .notNullable()
+      .references("id")
+      .inTable("users")
+      .onDelete("cascade");
+    table.boolean("is_completed").defaultTo(false);
 
     table.timestamp("created_at").notNullable().defaultTo(knex.raw("now()"));
 
