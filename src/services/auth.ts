@@ -2,15 +2,17 @@ import config from "../config";
 import { InvalidError } from "../error/invalid_error";
 import { NotFoundError } from "../error/not_found_error";
 import { UnauthenticatedError } from "../error/unauthenticated_error";
-import { getUserByEmail } from "./user";
+// import { getUserByEmail } from "./user";
 import bcrypt from "bcrypt";
 import { verify, sign, JsonWebTokenError } from "jsonwebtoken";
 import { User } from "../interfaces/user";
 import HttpStatusCodes from "http-status-codes";
+import * as UserService from "../services/user";
+import * as UserModel from "../models/user";
 
 export const login = async (email: string, password: string) => {
   // fetch existing user by email
-  const existingUser = getUserByEmail(email);
+  const existingUser = await UserModel.UserModel.getUserByEmail(email);
 
   // throw error when the user data is null
   if (!existingUser) {

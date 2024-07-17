@@ -15,7 +15,7 @@ export async function up(knex: Knex): Promise<void> {
     table.string("email", 100).notNullable().unique();
     table.string("password", 100).notNullable();
     table
-      .bigInteger("role_id")
+      .bigInteger("role_id") 
       .notNullable()
       .references("id")
       .inTable("roles")

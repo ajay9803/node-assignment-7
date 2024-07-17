@@ -2,6 +2,100 @@ import { NotFoundError } from "../error/not_found_error";
 import { UnauthorizedError } from "../error/unauthorized_error";
 import { User } from "../interfaces/user";
 import { adminCheck } from "../utils/admin_check";
+import BaseModel from "./base";
+
+export class UserModel extends BaseModel {
+  static createUser = async (user: Omit<User, "id">) => {
+    const userToCreate = {
+      name: user.name,
+      email: user.email,
+      password: user.password,
+      role_id: 2,
+    };
+
+    await this.queryBuilder().insert(userToCreate).table("users");
+  };
+
+  static getUserByEmail = async (email: string) => {
+    const user = await this.queryBuilder()
+      .select()
+      .from("users")
+      .where("email", email)
+      .first();
+
+    if (user) {
+      console.log("Here are the permissions.");
+      const permissions = await this.queryBuilder()
+        .join(
+          "permissions",
+          "permissions.id",
+          "roles_and_permissions.permission_id"
+        )
+        .table("roles_and_permissions")
+        .select("permissions.permission_name")
+
+        .where({ role_id: user.roleId });
+      console.log("Permissions: ", permissions);
+    }
+
+    console.log("The existing user is: ", user);
+    return user;
+  };
+
+  static getUserById = async (id: string) => {
+    const user = await this.queryBuilder()
+      .select()
+      .from("users")
+      .where("id", id)
+      .first();
+
+    console.log("The existing user is: ", user);
+    return user;
+  };
+
+  static updateUserById = async (
+    id: string,
+
+    // omit id and permissions - use necessary data
+    theUser: Omit<User, "id" | "permissions">
+  ) => {
+    let updatedAt = new Date();
+    console.log("The data is: ", id, theUser);
+
+    const user = await this.queryBuilder()
+      .select()
+      .from("users")
+      .where("id", id)
+      .first();
+    console.log("The fetched user is: ", user);
+
+    if (user) {
+      await this.queryBuilder()
+        .update({ ...theUser, updated_at: updatedAt })
+        .from("users")
+        .where("id", id);
+      return { ...user, ...theUser, updated_at: updatedAt };
+    }
+
+    return user;
+  };
+
+  static deleteUserById = async (id: string) => {
+    // forbid admin from deleting itself
+    if (adminCheck(id)) {
+      throw new UnauthorizedError("Task forbidden.");
+    }
+    const existingUser = await this.queryBuilder()
+      .select()
+      .from("users")
+      .where("id", id)
+      .first();
+
+    if (existingUser) {
+      await this.queryBuilder().delete().from("users").where("id", id);
+    }
+  };
+}
 
 // keep track of user's count to avoid duplicate user id's
 let userCount = 1;
@@ -71,7 +165,6 @@ export const updateUserById = (
     user.password = theUser.password;
   }
 
-  
   return user;
 };
 

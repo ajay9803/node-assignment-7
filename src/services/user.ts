@@ -11,7 +11,9 @@ export const add = (a: number, b: number) => {
 
 // create new user
 export const createUser = async (user: Omit<User, "id">) => {
-  const existingUser = UserModel.getUserByEmail(user.email);
+  // const existingUser = UserModel.getUserByEmail(user.email);
+
+  const existingUser = await UserModel.UserModel.getUserByEmail(user.email);
 
   // avoid duplicate email address
   if (existingUser) {
@@ -25,7 +27,7 @@ export const createUser = async (user: Omit<User, "id">) => {
     password: hashedPassword,
   };
 
-  UserModel.createUser(newUser);
+  await UserModel.UserModel.createUser(newUser);
 
   // return success-message
   return {
@@ -35,8 +37,8 @@ export const createUser = async (user: Omit<User, "id">) => {
 };
 
 // get user by id
-export const getUserById = (id: string) => {
-  const data = UserModel.getUserById(id);
+export const getUserById = async (id: string) => {
+  const data = await UserModel.UserModel.getUserById(id);
 
   // return success-message
   if (data) {
@@ -52,20 +54,12 @@ export const getUserById = (id: string) => {
   }
 };
 
-// fetch user by email
-export const getUserByEmail = (email: string) => {
-  const data = UserModel.getUserByEmail(email);
-
-  // return user data: null / real data
-  return data;
-};
-
 // update user by id
-export const updateUserById = (
+export const updateUserById = async (
   id: string,
   theUser: Omit<User, "id" | "permissions">
 ) => {
-  const user = UserModel.updateUserById(id, theUser);
+  const user = await UserModel.UserModel.updateUserById(id, theUser);
 
   if (user) {
     return {
@@ -79,8 +73,8 @@ export const updateUserById = (
 };
 
 // delete user by id
-export const deleteUserById = (id: string) => {
-  UserModel.deleteUserById(id);
+export const deleteUserById = async (id: string) => {
+  await UserModel.UserModel.deleteUserById(id);
   return {
     statusCode: HttpStatusCodes.NO_CONTENT,
     message: "User deleted successfully",

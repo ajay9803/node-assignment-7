@@ -33,14 +33,14 @@ export const createNewUser = async (
 };
 
 // controller to fetch user by id
-export const getUserById = (
+export const getUserById = async (
   req: Request,
   res: Response,
   next: NextFunction
 ) => {
   try {
     const { id } = req.params;
-    const result = UserService.getUserById(id);
+    const result = await UserService.getUserById(id);
 
     // send success message
     res.status(result.statusCode).send(result);
@@ -51,7 +51,7 @@ export const getUserById = (
 };
 
 // controller to update user by id
-export const updateUserById = (
+export const updateUserById = async (
   req: Request,
   res: Response,
   next: NextFunction
@@ -68,7 +68,7 @@ export const updateUserById = (
       password: password,
     };
 
-    const result = UserService.updateUserById(id, user);
+    const result = await UserService.updateUserById(id, user);
 
     // send success message
     res.status(result.statusCode).send(result);
@@ -79,7 +79,7 @@ export const updateUserById = (
 };
 
 // controller to delete user by id
-export const deleteUserById = (
+export const deleteUserById = async (
   req: Request,
   res: Response,
   next: NextFunction
@@ -87,7 +87,7 @@ export const deleteUserById = (
   try {
     const { id } = req.params;
 
-    const result = UserService.deleteUserById(id);
+    const result = await UserService.deleteUserById(id);
 
     // send success message
     res.send(result);
