@@ -22,8 +22,8 @@ export const deleteTodo = async (todoId: string, userId: string) => {
 };
 
 // fetch all todos - return success / failure result
-export const getAllTodos = async (userId: string) => {
-  const todos = await TodoModel.TodoModel.getAllTodos(userId);
+export const getAllTodos = async (userId: string, page: number, size: number) => {
+  const todos = await TodoModel.TodoModel.getAllTodos(userId, page, size);
 
   if (todos.length === 0) {
     throw new NotFoundError("No todos found.");

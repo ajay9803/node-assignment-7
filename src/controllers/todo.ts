@@ -45,10 +45,13 @@ export const getAllTodos = async (
 ) => {
   try {
     const user = req.user;
+
+    const { page, size } = req.query;
+
     if (adminCheck(user!.id)) {
       throw new UnauthorizedError("Task forbidden.");
     }
-    const result = await TodoService.getAllTodos(user!.id);
+    const result = await TodoService.getAllTodos(user!.id, +page, +size);
 
     res.status(result.statusCode).send(result);
   } catch (e) {
@@ -102,7 +105,11 @@ export const deleteTodoById = async (
 };
 
 // update todo by id
-export const updateTodo = async (req: Request, res: Response, next: NextFunction) => {
+export const updateTodo = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   try {
     const { id } = req.params;
     const { title, description } = req.body;
@@ -113,7 +120,12 @@ export const updateTodo = async (req: Request, res: Response, next: NextFunction
       throw new UnauthorizedError("Task forbidden.");
     }
 
-    const result = await TodoService.updateTodo(id, title, description, user!.id);
+    const result = await TodoService.updateTodo(
+      id,
+      title,
+      description,
+      user!.id
+    );
 
     res.status(result.statusCode).send(result);
   } catch (e) {

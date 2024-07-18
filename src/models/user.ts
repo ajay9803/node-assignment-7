@@ -5,7 +5,6 @@ import { adminCheck } from "../utils/admin_check";
 import BaseModel from "./base";
 
 export class UserModel extends BaseModel {
-
   // create user
   static createUser = async (user: Omit<User, "id">) => {
     const userToCreate = {
@@ -20,8 +19,6 @@ export class UserModel extends BaseModel {
 
   // fetch user by email
   static getUserByEmail = async (email: string) => {
-    console.log("Find user by email.");
-
     const user = await this.queryBuilder()
       .select()
       .from("users")
@@ -29,7 +26,6 @@ export class UserModel extends BaseModel {
       .first();
 
     if (user) {
-      console.log("Here are the permissions.");
       const permissions = await this.queryBuilder()
         .join(
           "permissions",
@@ -40,16 +36,13 @@ export class UserModel extends BaseModel {
         .select("permissions.permission_name")
         .where("role_id", user.roleId);
 
-        let userPermissions: string[] = permissions.map((permission) => {
-          return permission.permissionName;
-        });
+      let userPermissions: string[] = permissions.map((permission) => {
+        return permission.permissionName;
+      });
 
-        console.log('permissions: ', userPermissions);
-
-        return {...user, permissions: userPermissions};
+      return { ...user, permissions: userPermissions };
     }
 
-    console.log("The existing user is: ", user);
     return user;
   };
 
@@ -61,7 +54,6 @@ export class UserModel extends BaseModel {
       .where("id", id)
       .first();
 
-    console.log("The existing user is: ", user);
     return user;
   };
 
@@ -73,14 +65,12 @@ export class UserModel extends BaseModel {
     theUser: Omit<User, "id" | "permissions">
   ) => {
     let updatedAt = new Date();
-    console.log("The data is: ", id, theUser);
 
     const user = await this.queryBuilder()
       .select()
       .from("users")
       .where("id", id)
       .first();
-    console.log("The fetched user is: ", user);
 
     if (user) {
       await this.queryBuilder()
@@ -110,4 +100,3 @@ export class UserModel extends BaseModel {
     }
   };
 }
-

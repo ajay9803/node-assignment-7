@@ -3,7 +3,6 @@ import { Todo } from "../interfaces/todo";
 import BaseModel from "./base";
 
 export class TodoModel extends BaseModel {
-
   // create a todo
   static createTodo = async (todo: Omit<Todo, "id">) => {
     let newTodo = {
@@ -11,7 +10,6 @@ export class TodoModel extends BaseModel {
       description: todo.description,
       userId: todo.userId,
     };
-    console.log("The new todo is: ", newTodo);
     await this.queryBuilder().insert(newTodo).table("todos");
   };
 
@@ -41,7 +39,6 @@ export class TodoModel extends BaseModel {
     userId: string
   ) => {
     let updatedAt = new Date();
-    console.log("id and userId: ", id, userId);
     const existingTodo = await this.queryBuilder()
       .select()
       .from("todos")
@@ -49,7 +46,6 @@ export class TodoModel extends BaseModel {
       .first();
 
     if (existingTodo) {
-      console.log("The existing todo is: ", existingTodo);
       await this.queryBuilder()
         .update({
           title: title,
@@ -72,7 +68,6 @@ export class TodoModel extends BaseModel {
   // update todo's is-complete status
   static updateTodoCompletedStatus = async (id: string, userId: string) => {
     let updatedAt = new Date();
-    console.log("id and userId: ", id, userId);
     const existingTodo = await this.queryBuilder()
       .select()
       .from("todos")
@@ -80,7 +75,6 @@ export class TodoModel extends BaseModel {
       .first();
 
     if (existingTodo) {
-      console.log("The existing todo is: ", existingTodo);
       await this.queryBuilder()
         .update({
           is_completed: !existingTodo.isCompleted,
@@ -98,11 +92,13 @@ export class TodoModel extends BaseModel {
   };
 
   // get all todos
-  static getAllTodos = async (userId: string) => {
+  static getAllTodos = async (userId: string, page: number, size: number) => {
     const todos = await this.queryBuilder()
       .select()
       .table("todos")
-      .where("user_id", userId);
+      .where("user_id", userId)
+      .limit(size)
+      .offset((page - 1) * size);
     return todos;
   };
 
@@ -116,4 +112,3 @@ export class TodoModel extends BaseModel {
     return existingTodo;
   };
 }
-
