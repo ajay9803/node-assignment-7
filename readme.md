@@ -19,6 +19,40 @@ This is a Node.js application for managing users and their to-do items. The appl
 ## Object Relational Mapping  
 Using **Knex** and **pg**
 
+## Integration of database with server  
+Using **Postgre SQL** 
+
+## User Routes
+
+# API Documentation
+
+## User Routes
+
+| Endpoint    | HTTP Method | Description     |
+|-------------|-------------|-----------------|
+| `/users/`   | POST        | Create a user   |
+| `/users/:id`| GET         | Get a user      |
+| `/users/:id`| PUT         | Update a user   |
+| `/users/:id`| DELETE      | Delete a user   |
+
+## Todo Routes
+
+| Endpoint                | HTTP Method | Description                          |
+|-------------------------|-------------|--------------------------------------|
+| `/todos`                | POST        | Create a todo                        |
+| `/todos/all?page=&size=`| GET         | Get all todos                        |
+| `/todos/:id`            | GET         | Get a todo                           |
+| `/todos/:id`            | PUT         | Update a todo                        |
+| `/todos/:id`            | DELETE      | Delete a todo                        |
+| `/todos/:id`            | PATCH       | Update a todo's is complete status   |
+
+## Auth Routes
+
+| Endpoint                     | HTTP Method | Description                 |
+|------------------------------|-------------|-----------------------------|
+| `/auth/login`                | POST        | Login and create a session  |
+| `/auth/refresh-access-token` | GET         | Refresh the access token    |
+
 ## Installation
 
 1. Clone the repository:
